@@ -1,0 +1,58 @@
+<div class="container m-3">
+    <div class="row">
+        <div class="col-md-9">
+            <div class="row" *ngIf="!user.mentor && !connections.length">
+                <h1 class="border-bottom pb-1">New to the campus? Try finding a senior mentor!</h1>
+                <p>Following people from your department are open to mentoring! You can send up to 3 mentor requests!</p>
+                <div class="spinner-border" *ngIf="loadingSuggestions"></div>
+                <div class="horizontal-scroll" *ngIf="!loadingSuggestions">
+                    <app-profile-box
+                        *ngFor="let user of suggestions"
+                        [user]="user"
+                        [userType]="'suggestion'"
+                        class="mentor-suggestion"
+                        (sendRequest)="sendConnectionRequest($event)"
+                    >
+                    </app-profile-box>
+                </div>
+            </div>
+            <div class="row mb-5">
+                <h3>Your Connections:</h3>
+                <p>You chat with them to create new events</p>
+                <div class="spinner-border" *ngIf="loadingConnections"></div>
+                <div class="horizontal-scroll" *ngIf="!loadingConnections">
+                    <app-profile-box *ngFor="let mentor of connections" [user]="mentor" class="mentors"></app-profile-box>
+                </div>
+            </div>
+            <div class="row mb-5" *ngIf="user.mentor">
+                <h1 class="border-bottom pb-1">Pending Requests.</h1>
+                <div class="spinner-border" *ngIf="loadingRequests"></div>
+                <p *ngIf="!pendingRequests.length">You currently have no pending requests.</p>
+                <div class="horizontal-scroll" *ngIf="!loadingRequests">
+                    <app-profile-box
+                        *ngFor="let user of pendingRequests"
+                        [user]="user"
+                        [userType]="'request'"
+                        class="mentor-suggestion"
+                        (acceptRequest)="acceptConnectionRequest($event)"
+                    >
+                    </app-profile-box>
+                </div>
+            </div>
+            <div class="row" *ngIf="!user.mentor && connections.length">
+                <h3>Following students are open to being a mentor!</h3>
+                <div class="spinner-border" *ngIf="loadingSuggestions"></div>
+                <div class="horizontal-scroll" *ngIf="!loadingSuggestions">
+                    <app-profile-box
+                        *ngFor="let user of suggestions"
+                        [user]="user"
+                        [userType]="'suggestion'"
+                        class="mentor-suggestion"
+                        (sendRequest)="sendConnectionRequest($event)"
+                    >
+                    </app-profile-box>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container d-flex justify-content-between">
+      <a class="navbar-brand" routerLink="/">AIT Collab</a>
+      <div class="navbar-items">
+        <div *ngIf="isLoggedIn()" class="navbar-options">
+            <div class="nav-item">
+              <i class="fa-solid fa-bell" (click)="toggleNotifications()"></i>
+              <div class="count" *ngIf="notifications.length"></div>
+              <app-notification [showNotifications]="showNotification" [notifications]="notifications"></app-notification>
+            </div>
+          </div>
+        <ul *ngIf="!isLoggedIn()" class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/register">Register</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  

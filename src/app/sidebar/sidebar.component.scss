@@ -1,0 +1,24 @@
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: gainsboro;
+    width: 18rem;
+
+    .nav-link {
+        text-transform: uppercase;
+        font-weight: 800;
+        padding: 1rem 2rem;
+        font-size: 1.25rem;
+        
+        i {
+            margin-right: 1rem;
+        }
+    }
+
+    img {
+        height: 10rem;
+        width: 10rem;
+        margin: 15rem auto;
+    }
+}

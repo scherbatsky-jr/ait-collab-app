@@ -1,0 +1,180 @@
+<div class="container mt-5">
+    <div class="spinner-border" *ngIf="loading"></div>
+    <div class="row" *ngIf="!loading">
+      <!-- Left Sidebar Menu -->
+      <nav class="col-md-3 d-none d-md-block bg-light sidebar">
+        <div class="position-sticky">
+          <div class="profile-pic">
+            <img class="profile-image" (click)="openFileInput()" [src]="imageUrl"/>
+            <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" accept="image/*" />
+            <button (click)="uploadPhoto()" class="btn btn-primary">Upload Photo</button>
+          </div>
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/profile']" fragment="user-info-tab">User Information</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/profile']" fragment="academic-info-tab">Academic Information</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/profile']" fragment="change-password-tab">Change Password</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+  
+      <!-- Main Content Area -->
+      <div class="col-md-9">
+        <div class="card">
+          <div class="card-header">Profile</div>
+          <div class="card-body">
+            <div class="tab-content">
+              <!-- User Information Section -->
+              <div [class]="getTabPaneClass('user-info-tab')" id="user-info-tab">
+                <h3>User Information</h3>
+                <div *ngIf="showSuccessMessage" class="text-success mb-2">Changes saved successfully.</div>
+                <div *ngIf="showErrorMessage" class="text-danger mb-2">Changes could not be saved. Please try again.</div>
+                <form (ngSubmit)="saveUserInfo(userForm)" #userForm="ngForm">
+                  <div class="form-group mb-2" [ngClass]="{'has-error': firstNameInput.invalid && (firstNameInput.dirty || firstNameInput.touched)}">
+                    <label for="firstName">First Name</label>
+                    <input type="text" class="form-control" id="firstName" [(ngModel)]="userInfo.firstName" name="firstName" required #firstNameInput="ngModel">
+                    <div *ngIf="firstNameInput.invalid && (firstNameInput.dirty || firstNameInput.touched)">
+                      <div *ngIf="firstNameInput.errors && firstNameInput.errors['required']" class="text-danger">First Name is required.</div>
+                    </div>
+                  </div>
+                
+                  <div class="form-group mb-2" [ngClass]="{'has-error': lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched)}">
+                    <label for = "lastName">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" [(ngModel)]="userInfo.lastName" name="lastName" required #lastNameInput="ngModel">
+                    <div *ngIf="lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched)">
+                      <div *ngIf="lastNameInput.errors && lastNameInput.errors['required']" class="text-danger">Last Name is required.</div>
+                    </div>
+                  </div>
+                
+                  <div class="form-group mb-2" [ngClass]="{'has-error': usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)}">
+                    <label for="username">Username</label>
+                    <input type="username" class="form-control" id="username" [(ngModel)]="userInfo.username" name="username" disabled #usernameInput="ngModel">
+                  </div>
+                
+                  <div class="form-group mb-2" [ngClass]="{'has-error': emailInput.invalid && (emailInput.dirty || emailInput.touched)}">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" [(ngModel)]="userInfo.email" name="email" disabled #emailInput="ngModel">
+                  </div>
+                
+                  <div class="form-group mb-2">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" id="gender" [(ngModel)]="userInfo.gender" name="gender">
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                
+                  <div class="form-group mb-2" [ngClass]="{'has-error': nationalityInput.invalid && (nationalityInput.dirty || nationalityInput.touched)}">
+                    <label for="nationality">Nationality</label>
+                    <input type="text" class="form-control" id="nationality" [(ngModel)]="userInfo.nationality" name="nationality" required #nationalityInput="ngModel">
+                    <div *ngIf="nationalityInput.invalid && (nationalityInput.dirty || nationalityInput.touched)">
+                      <div *ngIf="nationalityInput.errors && nationalityInput.errors['required']" class="text-danger">Nationality is required.</div>
+                    </div>
+                  </div>
+                
+                  <div class="form-group mb-2" [ngClass]="{'has-error': dobInput.invalid && (dobInput.dirty || dobInput.touched)}">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" [(ngModel)]="userInfo.dateOfBirth" name="dateOfBirth" #dobInput="ngModel">
+                    <div *ngIf="dobInput.invalid && (dobInput.dirty || dobInput.touched)">
+                      <div *ngIf="dobInput.errors && dobInput.errors['required']" class="text-danger">Date of Birth is required.</div>
+                    </div>
+                  </div>
+
+                  <div class="form-gorup mb-2">
+                    <input type="checkbox" class="checkbox" [checked]="userInfo.mentor" (change)="onCheckMentor()">I want to be a mentor.
+                  </div>
+                
+                  <button type="submit" class="btn btn-primary" [disabled]="disableSubmit">Save</button>
+                </form>                
+              </div>
+  
+              <!-- Academic Information Section -->
+              <div [class]="getTabPaneClass('academic-info-tab')" id="academic-info-tab">
+                <h3>Academic Information</h3>
+                <!-- Academic Information Form -->
+                <div *ngIf="showSuccessMessage" class="text-success mb-2">Changes saved successfully.</div>
+                <div *ngIf="showErrorMessage" class="text-danger mb-2">Changes could not be saved. Please try again.</div>
+                <form (ngSubmit)="saveAcademicInfo(academicForm)" #academicForm="ngForm">
+                  <div class="form-group mb-2">
+                    <label for="intakeYear">Intake Year</label>
+                    <select id="intakeYear" name="intakeYear" class="form-control" [(ngModel)]="academicInfo.intakeYear">
+                      <option *ngFor="let year of yearDropdownOptions" [value]="year">{{ year }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group mb-2">
+                    <label for="intakeMonth">Intake Month</label>
+                    <select id="intakeMonth" name="intakeMonth" class="form-control" [(ngModel)]="academicInfo.intakeMonth">
+                      <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group mb-2">
+                    <label for="school">School</label>
+                    <select id="school" name="school" class="form-control" [(ngModel)]="academicInfo.school" (change)="onSchoolChange()">
+                      <option *ngFor="let school of schoolDropDownOptions" [value]="school.value">{{ school.label }}</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group mb-2">
+                    <label for="degreeProgram">Degree Program</label>
+                    <select id="degreeProgram" name="degreeProgram" class="form-control" [(ngModel)]="academicInfo.program">
+                      <option *ngFor="let program of programs" [value]="program">{{ program }}</option>
+                    </select>
+                  </div>
+                  
+                  <div class="form-group mb-2">
+                    <label for="fieldOfStudy">Field Of Study</label>
+                    <select id="fieldOfStudy" name="fieldOfStudy" class="form-control" [(ngModel)]="academicInfo.fieldOfStudy">
+                      <option *ngFor="let field of fieldOfStudiesOptions" [value]="field.value">{{ field.label }}</option>
+                    </select>
+                  </div>
+                  
+                  <button type="submit" class="btn btn-primary" [disabled]="disableSubmit">Save</button>
+                </form>
+              </div>
+  
+              <!-- Change Password Section -->
+              <div [class]="getTabPaneClass('change-password-tab')" id="change-password-tab">
+                <h3>Change Password</h3>
+                <!-- Change Password Form -->
+                <div *ngIf="showSuccessMessage" class="text-success mb-2">Changes saved successfully.</div>
+                <div *ngIf="showErrorMessage" class="text-danger mb-2">Changes could not be saved. Please try again.</div>
+                <form (ngSubmit)="changePassword()" #passwordChangeForm="ngForm">
+                  <div class="form-group mb-2">
+                    <label for="currentPassword">Current Password:</label>
+                    <input type="password" class="form-control" id="currentPassword" name="currentPassword" [(ngModel)]="currentPassword" required>
+                    <!-- <div *ngIf="passwordChangeForm.controls['currentPassword'].touched && passwordChangeForm.controls['currentPassword'].invalid" class="text-danger">
+                      Current Password is required.
+                    </div> -->
+                  </div>
+                  <div class="form-group mb-2">
+                    <label for="newPassword">New Password:</label>
+                    <input type="password" class="form-control" id="newPassword" name="newPassword" [(ngModel)]="newPassword" required>
+                    <!-- <div *ngIf="passwordChangeForm.controls['newPassword'].touched && passwordChangeForm.controls['newPassword'].invalid" class="text-danger">
+                      New Password is required and must be at least 8 characters.
+                    </div> -->
+                  </div>
+                  <!-- <div class="form-group mb-2">
+                    <label for="confirmPassword">Confirm New Password:</label>
+                    <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" [(ngModel)]="confirmPassword" required  appPasswordMatch [otherControl]="newPassword">
+                    <div *ngIf="passwordChangeForm.controls['confirmPassword'].touched && passwordChangeForm.controls['confirmPassword'].invalid" class="text-danger">
+                      Confirm Password is required and must match the New Password.
+                    </div>
+                  </div> -->
+                  <button type="submit" class="btn btn-primary" [disabled]="!passwordChangeForm.valid || disableSubmit">Change Password</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
