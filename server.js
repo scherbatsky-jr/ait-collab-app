@@ -12,4 +12,7 @@ app.get('/*', function(req,res) {
 });
 
 // Start the app by listening on the default Heroku port
-app.listen(process.env.PORT | 8080);
+const host = process.env.HOST || '0.0.0.0'
+app.listen(process.env.PORT | 8080, host, function() {
+        console.log('Server started') 
+});
