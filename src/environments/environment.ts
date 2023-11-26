@@ -1,4 +1,4 @@
 export const environment = {
-    baseApiURL: 'http://localhost:20178',
-    webSockeURL: 'localhost:20178'
+    baseApiURL: 'https://ait-collab-api-52240598a573.herokuapp.com',
+    webSockeURL: 'ait-collab-api-52240598a573.herokuapp.com'
 };
